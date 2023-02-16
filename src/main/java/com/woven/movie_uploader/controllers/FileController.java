@@ -7,18 +7,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value="/files")
+@RequestMapping(value = "/${api.version}/files")
 public class FileController {
 
-    final String hogefuga;
-    public FileController(@Value("${hoge.fuga}") final String hogefuga) {
-        this.hogefuga = hogefuga;
-    }
-    @RequestMapping(value="/{field}",method = RequestMethod.GET)
+
+    @RequestMapping(value = "/{field}", method = RequestMethod.GET)
     public String download(@PathVariable final String field) {
-        return "Download "+ field +" " + hogefuga;
+        return "Download " + field;
     }
-    @RequestMapping(value="/{field}",method = RequestMethod.DELETE)
+
+    @RequestMapping(value = "/{field}", method = RequestMethod.DELETE)
     public String delete(@PathVariable final String field) {
         return "Delete" + field;
     }
