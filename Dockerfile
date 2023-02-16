@@ -1,5 +1,7 @@
-FROM openjdk:17-alpine
+FROM gradle:7.6.0-jdk17-alpine
 
-COPY . /usr/bin/
-WORKDIR /home
+RUN mkdir /var/deploy
+COPY . /var/deploy
+WORKDIR /var/deploy
+RUN gradle wrapper
 ENTRYPOINT ["./gradlew", "bootRun"]
