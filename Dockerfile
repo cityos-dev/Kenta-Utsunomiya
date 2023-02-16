@@ -1,5 +1,5 @@
 FROM openjdk:17-alpine
 
-COPY ./movie_uploader /home/
+COPY . /usr/bin/
 WORKDIR /home
 ENTRYPOINT ["./gradlew", "bootRun"]
