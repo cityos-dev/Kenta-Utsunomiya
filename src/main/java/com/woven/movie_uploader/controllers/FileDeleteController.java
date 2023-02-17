@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -23,7 +24,7 @@ public class FileDeleteController {
     private static final String NOT_FOUND_MESSAGE = "File not found";
 
     @Autowired
-    FileDeleteController(final MemoryUtil storageUtil) {
+    FileDeleteController(final FileHandler storageUtil) {
         this.fileHandler = storageUtil;
     }
 

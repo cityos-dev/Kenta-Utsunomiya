@@ -20,25 +20,17 @@ import java.util.Optional;
 //connect with memory instance
 public class MemoryUtil implements FileHandler {
 
-    private final Map<String, byte[]> idToContent = new HashMap<>();
-    private final Map<String, String> idToFilename = new HashMap<>();
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
     private final MessageDigest md5;
 
-    MemoryUtil() throws NoSuchAlgorithmException {
+    public MemoryUtil() throws NoSuchAlgorithmException {
         md5 = MessageDigest.getInstance("MD5");
     }
 
 
     @Override
     public synchronized boolean deleteFile(String id) throws IOException {
-        if (idToContent.containsKey(id)) {
-            idToContent.remove(id);
-            idToFilename.remove(id);
-            fileMetadataMap.remove(id);
-            // should be atomic
-        }
-        return false;
+        return Optional.ofNullable(fileMetadataMap.remove(id)).isPresent();
     }
 
 
@@ -50,10 +42,8 @@ public class MemoryUtil implements FileHandler {
                 .setName(filename)
                 .setFilesize(content.length)
                 .setCreatedAt(new Date().toString())
+                .setContent(content)
                 .build();
-
-        idToContent.put(fileid, content);
-        idToFilename.put(fileid, filename);
         fileMetadataMap.put(fileid, fileMetadata);
 
         return fileid;
@@ -61,12 +51,16 @@ public class MemoryUtil implements FileHandler {
 
     @Override
     public Resource getFileResource(String id) throws IOException {
-        return new ByteArrayResource(idToContent.get(id));
+        return new ByteArrayResource(fileMetadataMap.get(id).getContents());
     }
 
     @Override
     public Optional<String> getFilenameFromId(String id) {
-        return Optional.ofNullable(idToFilename.get(id));
+        if (fileMetadataMap.containsKey(id)) {
+            return Optional.ofNullable(fileMetadataMap.get(id).getName());
+        } else {
+            return Optional.empty();
+        }
     }
 
 

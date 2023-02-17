@@ -1,6 +1,7 @@
 package com.woven.movie_uploader.filehandler;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FileMetadata {
@@ -13,12 +14,15 @@ public class FileMetadata {
     private final int filesize;
     @JsonProperty("created_at")
     private final String createdAt;
+    @JsonIgnore
+    private final byte[] contents;
 
-    private FileMetadata(final String fileId, final String name, final int filesize, final String createdAt) {
+    private FileMetadata(final String fileId, final String name, final int filesize, final String createdAt, final byte[] contents) {
         this.filesize = filesize;
         this.fileId = fileId;
         this.name = name;
         this.createdAt = createdAt;
+        this.contents = contents;
     }
 
     public static class Builder {
@@ -26,6 +30,7 @@ public class FileMetadata {
         private String name;
         private int filesize;
         private String createdAt;
+        private byte[] content;
 
         public Builder setFileId(final String fileId) {
             this.fileId = fileId;
@@ -47,13 +52,26 @@ public class FileMetadata {
             return this;
         }
 
+        public Builder setContent(final byte[] content) {
+            this.content = content;
+            return this;
+        }
+
         public FileMetadata build() {
-            return new FileMetadata(fileId, name, filesize, createdAt);
+            return new FileMetadata(fileId, name, filesize, createdAt, content);
         }
 
     }
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public byte[] getContents(){
+        return contents;
     }
 }
