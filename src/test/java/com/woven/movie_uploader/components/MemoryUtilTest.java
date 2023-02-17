@@ -1,24 +1,17 @@
 package com.woven.movie_uploader.components;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 
-public class StorageUtilTest {
+public class MemoryUtilTest {
 
-    @TempDir
-    private File tmpDir;
-
-    private MemoryUtil storageUtil;
+    private FileInMemoryHandler storageUtil;
 
     @BeforeEach
     public void tearUp() throws Exception {
-        storageUtil = new MemoryUtil();
+        storageUtil = new FileInMemoryHandler();
     }
 
     @Test

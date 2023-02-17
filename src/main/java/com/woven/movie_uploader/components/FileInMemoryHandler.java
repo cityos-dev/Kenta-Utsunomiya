@@ -18,12 +18,12 @@ import java.util.Optional;
 
 @Component
 //connect with memory instance
-public class MemoryUtil implements FileHandler {
+public class FileInMemoryHandler implements FileHandler {
 
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
     private final MessageDigest md5;
 
-    public MemoryUtil() throws NoSuchAlgorithmException {
+    public FileInMemoryHandler() throws NoSuchAlgorithmException {
         md5 = MessageDigest.getInstance("MD5");
     }
 
@@ -35,7 +35,7 @@ public class MemoryUtil implements FileHandler {
 
 
     @Override
-    public synchronized String uploadFile(final String filename, final byte[] content) throws IOException {
+    public synchronized String uploadFile(final String filename, final byte[] content, final String contentType) throws IOException {
         final String fileid = MD5Encoder.encode(md5.digest(content));
         final FileMetadata fileMetadata = FileMetadata.builder()
                 .setFileId(fileid)
@@ -43,6 +43,7 @@ public class MemoryUtil implements FileHandler {
                 .setFilesize(content.length)
                 .setCreatedAt(new Date().toString())
                 .setContent(content)
+                .setContentType(contentType)
                 .build();
         fileMetadataMap.put(fileid, fileMetadata);
 
@@ -55,12 +56,8 @@ public class MemoryUtil implements FileHandler {
     }
 
     @Override
-    public Optional<String> getFilenameFromId(String id) {
-        if (fileMetadataMap.containsKey(id)) {
-            return Optional.ofNullable(fileMetadataMap.get(id).getName());
-        } else {
-            return Optional.empty();
-        }
+    public Optional<FileMetadata> getFileContents(String id) {
+        return Optional.ofNullable(fileMetadataMap.get(id));
     }
 
 

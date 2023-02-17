@@ -10,11 +10,11 @@ import java.util.Optional;
 public interface FileHandler {
     public boolean deleteFile(final String id) throws IOException;
 
-    public String uploadFile(final String filename, final byte[] content) throws IOException;
+    public String uploadFile(final String filename, final byte[] content, final String contentType) throws IOException;
 
     public Resource getFileResource(final String id) throws IOException;
 
-    public Optional<String> getFilenameFromId(final String id);
+    public Optional<FileMetadata> getFileContents(final String id);
 
     public List<FileMetadata> allfiles();
 }

@@ -1,6 +1,5 @@
 package com.woven.movie_uploader.controllers;
 
-import com.woven.movie_uploader.components.MemoryUtil;
 import com.woven.movie_uploader.filehandler.FileHandler;
 import com.woven.movie_uploader.filehandler.FileMetadata;
 import com.woven.movie_uploader.filehandler.StorageFileNotFoundException;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -36,18 +34,14 @@ public class FileDownloadController {
     @RequestMapping(value = "/{fileid}", method = RequestMethod.GET)
     public ResponseEntity<Resource> handleDownload(@PathVariable final String fileid) throws IOException {
         final ResponseEntity<Resource> response;
-        final Optional<String> filenameOptional = fileHandler.getFilenameFromId(fileid);
-        if (filenameOptional.isPresent()) {
-            Resource resource = fileHandler.getFileResource(fileid);
-            final String filename = filenameOptional.get();
-            final String ContentType;
-            if (filename.endsWith(".mp4")) {
-                ContentType = "video/mp4";
-            } else {
-                ContentType = "video/mpeg";
-            }
+        final Optional<FileMetadata> metadataOptional = fileHandler.getFileContents(fileid);
+        if (metadataOptional.isPresent()) {
+            final FileMetadata fileMetadata = metadataOptional.get();
+            final Resource resource = fileHandler.getFileResource(fileid);
+            final String filename = fileMetadata.getName();
+            final String contentType = fileMetadata.getContentType();
             response = ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, ContentType)
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", filename))
                     .body(resource);
         } else {

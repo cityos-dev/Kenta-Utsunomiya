@@ -4,3 +4,9 @@ services:
     build: .
     ports:
       - "8080:8080"
+    healthcheck:
+      test: "curl http://localhost:8080/v1/health"
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s

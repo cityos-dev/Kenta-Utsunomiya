@@ -16,13 +16,16 @@ public class FileMetadata {
     private final String createdAt;
     @JsonIgnore
     private final byte[] contents;
+    @JsonIgnore
+    private final String contentType;
 
-    private FileMetadata(final String fileId, final String name, final int filesize, final String createdAt, final byte[] contents) {
+    private FileMetadata(final String fileId, final String name, final int filesize, final String createdAt, final byte[] contents, final String contentType) {
         this.filesize = filesize;
         this.fileId = fileId;
         this.name = name;
         this.createdAt = createdAt;
         this.contents = contents;
+        this.contentType = contentType;
     }
 
     public static class Builder {
@@ -31,6 +34,7 @@ public class FileMetadata {
         private int filesize;
         private String createdAt;
         private byte[] content;
+        private String contentType;
 
         public Builder setFileId(final String fileId) {
             this.fileId = fileId;
@@ -57,8 +61,13 @@ public class FileMetadata {
             return this;
         }
 
+        public Builder setContentType(final String contentType) {
+            this.contentType = contentType;
+            return this;
+        }
+
         public FileMetadata build() {
-            return new FileMetadata(fileId, name, filesize, createdAt, content);
+            return new FileMetadata(fileId, name, filesize, createdAt, content, contentType);
         }
 
     }
@@ -73,5 +82,9 @@ public class FileMetadata {
 
     public byte[] getContents(){
         return contents;
+    }
+
+    public String getContentType() {
+        return contentType;
     }
 }

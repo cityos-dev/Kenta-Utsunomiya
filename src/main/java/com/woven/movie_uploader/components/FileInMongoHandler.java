@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 // connect with mongo instance
-public class MongoUtil implements FileHandler {
+public class FileInMongoHandler implements FileHandler {
     @Override
-    public boolean deleteFile(String id) throws IOException {
+    public boolean deleteFile(final String id) throws IOException {
         return false;
     }
 
     @Override
-    public String uploadFile(String filename, byte[] content) throws IOException {
+    public String uploadFile(final String filename, byte[] content, final String contentType) throws IOException {
         return null;
     }
 
@@ -25,9 +25,10 @@ public class MongoUtil implements FileHandler {
     }
 
     @Override
-    public Optional<String> getFilenameFromId(String id) {
+    public Optional<FileMetadata> getFileContents(String id) {
         return Optional.empty();
     }
+
 
     @Override
     public List<FileMetadata> allfiles() {
