@@ -31,7 +31,6 @@ public class FileUploadController {
 
     private final FileHandler fileHandler;
     private final String SUCCESS_UPLOAD_MESSAGE = "File uploaded";
-    private final String FILE_EXIST_MESSAGE = "File exists";
     private final String UNSUPPORTED_FILE_TYPE_MESSAGE = "Unsupported Media Type";
     private final List<String> supportedMediaTypes = Arrays.asList("video/mp4", "video/mpeg");
     @Autowired
