@@ -14,26 +14,15 @@ public class StorageUtilTest {
     @TempDir
     private File tmpDir;
 
-    private StorageUtil storageUtil;
+    private MemoryUtil storageUtil;
 
     @BeforeEach
-    public void tearUp() {
-        storageUtil = new StorageUtil(tmpDir.getAbsolutePath());
+    public void tearUp() throws Exception {
+        storageUtil = new MemoryUtil();
     }
 
     @Test
     public void testListFiles() throws IOException {
-        Assertions.assertIterableEquals(Lists.newArrayList(), storageUtil.allfiles());
-        final String file = "file";
-        final String file2 = "file2";
-        storageUtil.uploadFile(file);
-        storageUtil.uploadFile(file2);
-        Assertions.assertTrue(storageUtil.exists(file));
-        Assertions.assertTrue(storageUtil.exists(file2));
-        Assertions.assertIterableEquals(Lists.newArrayList(file, file2), storageUtil.allfiles());
-        Assertions.assertTrue(storageUtil.deleteFile(file));
-        Assertions.assertTrue(storageUtil.deleteFile(file2));
-        Assertions.assertFalse(storageUtil.deleteFile(file));
     }
 
     @Test

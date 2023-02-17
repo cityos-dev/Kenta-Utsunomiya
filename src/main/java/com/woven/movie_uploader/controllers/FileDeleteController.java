@@ -1,8 +1,7 @@
 package com.woven.movie_uploader.controllers;
 
-import com.woven.movie_uploader.components.StorageUtil;
+import com.woven.movie_uploader.components.MemoryUtil;
 import com.woven.movie_uploader.filehandler.FileHandler;
-import com.woven.movie_uploader.filehandler.FileMetadata;
 import com.woven.movie_uploader.filehandler.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +23,15 @@ public class FileDeleteController {
     private static final String NOT_FOUND_MESSAGE = "File not found";
 
     @Autowired
-    FileDeleteController(final StorageUtil storageUtil) {
+    FileDeleteController(final MemoryUtil storageUtil) {
         this.fileHandler = storageUtil;
     }
 
-    @RequestMapping(value = "/{filename}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> handleDelete(@PathVariable final String filename) throws IOException, StorageFileNotFoundException {
+    @RequestMapping(value = "/{fileid}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> handleDelete(@PathVariable final String fileid) throws IOException, StorageFileNotFoundException {
         final ResponseEntity<String> response;
-        if (fileHandler.exists(filename)) {
+        if (fileHandler.getFilenameFromId(fileid).isPresent()) {
+            fileHandler.deleteFile(fileid);
             response = ResponseEntity.status(HttpStatus.NO_CONTENT).body(SUCCESS_DELETE_RESPONCE_MESSAGE);
         } else {
             throw new StorageFileNotFoundException();

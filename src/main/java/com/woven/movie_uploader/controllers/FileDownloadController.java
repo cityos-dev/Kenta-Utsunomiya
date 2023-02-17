@@ -1,15 +1,13 @@
 package com.woven.movie_uploader.controllers;
 
-import com.woven.movie_uploader.components.StorageUtil;
+import com.woven.movie_uploader.components.MemoryUtil;
 import com.woven.movie_uploader.filehandler.FileHandler;
+import com.woven.movie_uploader.filehandler.FileMetadata;
 import com.woven.movie_uploader.filehandler.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/${api.version}/files")
@@ -28,17 +26,25 @@ public class FileDownloadController {
     final FileHandler fileHandler;
 
     @Autowired
-    FileDownloadController(final StorageUtil storageUtil) {
+    FileDownloadController(final MemoryUtil storageUtil) {
         this.fileHandler = storageUtil;
     }
 
-    @RequestMapping(value = "/{filename}", method = RequestMethod.GET)
-    public ResponseEntity<Resource> handleDownload(@PathVariable final String filename) throws IOException, StorageFileNotFoundException {
+    @RequestMapping(value = "/{fileid}", method = RequestMethod.GET)
+    public ResponseEntity<Resource> handleDownload(@PathVariable final String fileid) throws IOException, StorageFileNotFoundException {
         final ResponseEntity<Resource> response;
-        if (fileHandler.exists(filename)) {
-            Resource resource = fileHandler.getFileResource(filename);
+        final Optional<String> filenameOptional = fileHandler.getFilenameFromId(fileid);
+        if (filenameOptional.isPresent()) {
+            Resource resource = fileHandler.getFileResource(fileid);
+            final String filename = filenameOptional.get();
+            final String contenttype;
+            if (filename.endsWith(".mp4")) {
+                contenttype = "video/mp4";
+            } else {
+                contenttype = "video/mpeg";
+            }
             response = ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_TYPE, contenttype)
                     .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", filename))
                     .body(resource);
         } else {
@@ -48,7 +54,7 @@ public class FileDownloadController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<String> listFiles() throws IOException {
+    public List<FileMetadata> listFiles() throws IOException {
         return fileHandler.allfiles();
     }
 
