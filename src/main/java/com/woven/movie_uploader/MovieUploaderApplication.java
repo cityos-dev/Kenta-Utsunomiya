@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-@ComponentScan(basePackages = "com.woven.movie_uploader.controllers")
+@ComponentScan(basePackages = {"com.woven.movie_uploader.controllers", "com.woven.movie_uploader.components"})
 public class MovieUploaderApplication {
 
     public static void main(String[] args) {

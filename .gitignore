@@ -44,3 +44,5 @@ gradle/wrapper/gradle-wrapper.jar
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+/node_modules
+/.run
