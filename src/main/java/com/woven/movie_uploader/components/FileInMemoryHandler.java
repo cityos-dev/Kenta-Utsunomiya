@@ -3,6 +3,7 @@ package com.woven.movie_uploader.components;
 import com.woven.movie_uploader.filehandler.FileHandler;
 import com.woven.movie_uploader.filehandler.FileMetadata;
 import org.apache.tomcat.util.security.MD5Encoder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -16,15 +17,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
 //connect with memory instance
 public class FileInMemoryHandler implements FileHandler {
 
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
-    private final MessageDigest md5;
+    private final MessageDigest md5 ;
 
-    public FileInMemoryHandler() throws NoSuchAlgorithmException {
-        md5 = MessageDigest.getInstance("MD5");
+    public FileInMemoryHandler(final MessageDigest md5) {
+        this.md5 = md5;
     }
 
 
