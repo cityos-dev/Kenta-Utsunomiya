@@ -34,9 +34,8 @@ public class FileUploadController {
     private final String FILE_EXIST_MESSAGE = "File exists";
     private final String UNSUPPORTED_FILE_TYPE_MESSAGE = "Unsupported Media Type";
     private final List<String> supportedMediaTypes = Arrays.asList("video/mp4", "video/mpeg");
-    private final StandardServletMultipartResolver resolver = new StandardServletMultipartResolver();
     @Autowired
-    FileUploadController(final MemoryUtil storageUtil) {
+    FileUploadController(final FileHandler storageUtil) {
         this.fileHandler = storageUtil;
     }
 

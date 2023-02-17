@@ -25,7 +25,7 @@ public class MemoryUtil implements FileHandler {
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
     private final MessageDigest md5;
 
-    MemoryUtil() throws NoSuchAlgorithmException {
+    public MemoryUtil() throws NoSuchAlgorithmException {
         md5 = MessageDigest.getInstance("MD5");
     }
 

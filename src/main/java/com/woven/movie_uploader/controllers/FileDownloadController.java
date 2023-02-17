@@ -5,6 +5,7 @@ import com.woven.movie_uploader.filehandler.FileHandler;
 import com.woven.movie_uploader.filehandler.FileMetadata;
 import com.woven.movie_uploader.filehandler.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,35 +29,37 @@ public class FileDownloadController {
     final FileHandler fileHandler;
 
     @Autowired
-    FileDownloadController(final MemoryUtil storageUtil) {
+    FileDownloadController(final FileHandler storageUtil) {
         this.fileHandler = storageUtil;
     }
 
     @RequestMapping(value = "/{fileid}", method = RequestMethod.GET)
-    public ResponseEntity<Resource> handleDownload(@PathVariable final String fileid) throws IOException, StorageFileNotFoundException {
+    public ResponseEntity<Resource> handleDownload(@PathVariable final String fileid) throws IOException {
         final ResponseEntity<Resource> response;
         final Optional<String> filenameOptional = fileHandler.getFilenameFromId(fileid);
         if (filenameOptional.isPresent()) {
             Resource resource = fileHandler.getFileResource(fileid);
             final String filename = filenameOptional.get();
-            final String contenttype;
+            final String ContentType;
             if (filename.endsWith(".mp4")) {
-                contenttype = "video/mp4";
+                ContentType = "video/mp4";
             } else {
-                contenttype = "video/mpeg";
+                ContentType = "video/mpeg";
             }
             response = ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, contenttype)
+                    .header(HttpHeaders.CONTENT_TYPE, ContentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", filename))
                     .body(resource);
         } else {
-            throw new StorageFileNotFoundException();
+            response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ByteArrayResource(NOT_FOUND_MESSAGE.getBytes(StandardCharsets.UTF_8))
+            );
         }
         return response;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<FileMetadata> listFiles() throws IOException {
+    @RequestMapping(method = RequestMethod.GET)
+    public List<FileMetadata> listFiles() {
         return fileHandler.allfiles();
     }
 
