@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
+//connect with memory instance
 public class MemoryUtil implements FileHandler {
 
     private final Map<String, byte[]> idToContent = new HashMap<>();
