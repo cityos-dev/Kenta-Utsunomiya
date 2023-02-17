@@ -1,18 +1,15 @@
 package com.woven.movie_uploader.properties;
 
-import com.woven.movie_uploader.components.FileInMemoryHandler;
+import com.woven.movie_uploader.components.FileInMongoHandler;
 import com.woven.movie_uploader.filehandler.FileHandler;
+import com.woven.movie_uploader.mongo.FileRepository;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import java.security.MessageDigest;
 
 @Configuration
-@ComponentScan
 public class ConfigurationProperties {
-
 
     @Bean
     MessageDigest messageDigest() throws Exception {
@@ -20,8 +17,8 @@ public class ConfigurationProperties {
     }
 
     @Bean
-    FileHandler fileHandler(final MessageDigest messageDigest) throws Exception {
-        return new FileInMemoryHandler(messageDigest);
+    FileHandler fileHandler(final MessageDigest messageDigest, final FileRepository repo) {
+        return new FileInMongoHandler(repo, messageDigest);
     }
 
 }

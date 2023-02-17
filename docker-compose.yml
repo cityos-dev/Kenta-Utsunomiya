@@ -1,7 +1,18 @@
 version: "3.8"
 services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+
   web:
     build: .
+    depends_on:
+      - mongo
     ports:
       - "8080:8080"
     healthcheck:
