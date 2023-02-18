@@ -1,12 +1,12 @@
 package com.woven.movie_uploader.filehandler;
 
+import org.bson.codecs.ObjectIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -14,20 +14,12 @@ import static org.mockito.Mockito.*;
 public class MemoryUtilTest {
 
     private FileInMemoryHandler storageUtil;
-    private MessageDigest mockDigest;
+    private ObjectIdGenerator objectIdGenerator;
 
-    private static final String sampleMd5String = "00112233445566778899aabbccddeeff";
-    private static final byte[] sampleM5byteArray;
-    static {
-        sampleM5byteArray = new byte[16];
-        for(int i = 0 ; i < 16; i++) {
-            sampleM5byteArray[i] = (byte)(i * 16 + i);
-        }
-    }
     @BeforeEach
     public void startUp() throws Exception {
-        mockDigest = mock(MessageDigest.class);
-        storageUtil = new FileInMemoryHandler(mockDigest);
+        objectIdGenerator = mock(ObjectIdGenerator.class);
+        storageUtil = new FileInMemoryHandler(objectIdGenerator);
     }
 
     @Test
@@ -35,19 +27,18 @@ public class MemoryUtilTest {
         final String filename = "file1";
         final byte[] content = "content".getBytes(StandardCharsets.UTF_8);
         final String contentType = "contentType";
-        when(mockDigest.digest(content)).thenReturn(sampleM5byteArray);
-        assertEquals(sampleMd5String, storageUtil.uploadFile(filename, content, contentType));
-        verify(mockDigest, times(1)).digest(content);
+        final String id = "aabbcc";
+        when(objectIdGenerator.generate()).thenReturn(id);
+        assertEquals(id, storageUtil.uploadFile(filename, content, contentType));
         // upload
 
-        assertTrue(storageUtil.getFileContents(sampleMd5String).isPresent());
+        assertTrue(storageUtil.getFileContents(id).isPresent());
 
         // delete file
-        assertTrue(storageUtil.deleteFile(sampleMd5String));
+        assertTrue(storageUtil.deleteFile(id));
 
 
-        assertFalse(storageUtil.getFileContents(sampleMd5String).isPresent());
-        assertFalse(storageUtil.getFileContents(sampleMd5String).isPresent());
+        assertFalse(storageUtil.getFileContents(id).isPresent());
     }
 
     @Test
@@ -55,11 +46,12 @@ public class MemoryUtilTest {
         final String filename = "file1";
         final byte[] content = "content".getBytes(StandardCharsets.UTF_8);
         final String contentType = "contentType";
-        when(mockDigest.digest(content)).thenReturn(sampleM5byteArray);
-        assertEquals(sampleMd5String, storageUtil.uploadFile(filename, content, contentType));
-        verify(mockDigest, times(1)).digest(content);
+        final String id = "aabbcc";
+        when(objectIdGenerator.generate()).thenReturn(id);
+        assertEquals(id, storageUtil.uploadFile(filename, content, contentType));
+        verify(objectIdGenerator, times(1)).generate();
 
-        final Resource resource = storageUtil.getFileResource(sampleMd5String);
+        final Resource resource = storageUtil.getFileResource(id);
         assertNotNull(resource);
         assertEquals(content.length, resource.contentLength());
     }

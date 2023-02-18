@@ -2,12 +2,12 @@ package com.woven.movie_uploader.filehandler;
 
 import com.woven.movie_uploader.mongo.FileMetadataModel;
 import com.woven.movie_uploader.mongo.FileRepository;
+import org.bson.codecs.ObjectIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.Date;
 import java.util.Optional;
 
@@ -18,25 +18,16 @@ import static org.mockito.Mockito.*;
 public class MongoUtilTest {
 
     private FileRepository fileRepository;
-    private MessageDigest digest;
+    private ObjectIdGenerator generator;
     private FileInMongoHandler fileInMongoHandler;
 
-    private static final String sampleMd5String = "00112233445566778899aabbccddeeff";
-    private static final byte[] sampleM5byteArray;
-
-    static {
-        sampleM5byteArray = new byte[16];
-        for (int i = 0; i < 16; i++) {
-            sampleM5byteArray[i] = (byte) (i * 16 + i);
-        }
-    }
 
 
     @BeforeEach
     public void startUp() throws Exception {
         fileRepository = mock(FileRepository.class);
-        digest = mock(MessageDigest.class);
-        fileInMongoHandler = new FileInMongoHandler(fileRepository, digest);
+        generator = mock(ObjectIdGenerator.class);
+        fileInMongoHandler = new FileInMongoHandler(fileRepository, generator);
     }
 
     @Test
@@ -50,14 +41,14 @@ public class MongoUtilTest {
         final FileMetadataModel model = new FileMetadataModel(
                 testExistQuery, filename, contentType, new Date().toString(), content
         );
-        when(digest.digest(content)).thenReturn(sampleM5byteArray); //
+        when(generator.generate()).thenReturn(testExistQuery);
         when(fileRepository.existsById(eq(testNotExistQuery))).thenReturn(false);
         when(fileRepository.existsById(eq(testExistQuery))).thenReturn(true);
         when(fileRepository.findFileByName(eq(testExistQuery))).thenReturn(model);
 
         assertFalse(fileInMongoHandler.getFileContents(testNotExistQuery).isPresent()); // check file does not exist
 
-        assertEquals(sampleMd5String, fileInMongoHandler.uploadFile(filename, content, contentType)); // check upload success
+        assertEquals(testExistQuery, fileInMongoHandler.uploadFile(filename, content, contentType)); // check upload success
 
         final Optional<FileMetadata> metadata = fileInMongoHandler.getFileContents(testExistQuery);
         assertTrue(metadata.isPresent());

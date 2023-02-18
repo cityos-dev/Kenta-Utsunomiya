@@ -1,11 +1,10 @@
 package com.woven.movie_uploader.filehandler;
 
-import org.apache.tomcat.util.security.MD5Encoder;
+import org.bson.codecs.ObjectIdGenerator;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +15,10 @@ import java.util.Optional;
 public class FileInMemoryHandler implements FileHandler {
 
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
-    private final MessageDigest md5 ;
+    private final ObjectIdGenerator objectIdGenerator;
 
-    public FileInMemoryHandler(final MessageDigest md5) {
-        this.md5 = md5;
+    public FileInMemoryHandler(final ObjectIdGenerator objectIdGenerator) {
+        this.objectIdGenerator = objectIdGenerator;
     }
 
 
@@ -31,7 +30,7 @@ public class FileInMemoryHandler implements FileHandler {
 
     @Override
     public synchronized String uploadFile(final String filename, final byte[] content, final String contentType) throws IOException {
-        final String fileid = MD5Encoder.encode(md5.digest(content));
+        final String fileid = objectIdGenerator.generate().toString();
         final FileMetadata fileMetadata = FileMetadata.builder()
                 .setFileId(fileid)
                 .setName(filename)

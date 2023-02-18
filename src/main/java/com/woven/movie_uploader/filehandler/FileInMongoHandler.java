@@ -2,12 +2,11 @@ package com.woven.movie_uploader.filehandler;
 
 import com.woven.movie_uploader.mongo.FileMetadataModel;
 import com.woven.movie_uploader.mongo.FileRepository;
-import org.apache.tomcat.util.security.MD5Encoder;
+import org.bson.codecs.ObjectIdGenerator;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,12 +15,12 @@ import java.util.stream.Collectors;
 // connect with mongo instance
 
 public class FileInMongoHandler implements FileHandler {
-    final FileRepository mongoFileRepository;
-    final MessageDigest messageDigest;
+    private final FileRepository mongoFileRepository;
+    private final ObjectIdGenerator objectIdGenerator;
 
-    public FileInMongoHandler(final FileRepository repository, final MessageDigest digest) {
+    public FileInMongoHandler(final FileRepository repository, final ObjectIdGenerator objectIdGenerator) {
         this.mongoFileRepository = repository;
-        this.messageDigest = digest;
+        this.objectIdGenerator = objectIdGenerator;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class FileInMongoHandler implements FileHandler {
 
     @Override
     public String uploadFile(final String filename, byte[] content, final String contentType) throws IOException {
-        final String id = MD5Encoder.encode(messageDigest.digest(content));
+        final String id = objectIdGenerator.generate().toString();
         final FileMetadataModel model = new FileMetadataModel(
                 id,
                 filename,
