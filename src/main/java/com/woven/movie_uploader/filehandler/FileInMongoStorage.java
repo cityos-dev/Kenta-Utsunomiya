@@ -47,13 +47,13 @@ public class FileInMongoStorage implements FileStorage {
     }
 
     @Override
-    public Resource getFileResource(String id) throws IOException {
+    public Resource getFileResource(final String id) throws IOException {
         final FileMetadataModel model = mongoFileRepository.findFileByName(id);
         return new ByteArrayResource(model.convertToFileMetadata().contents());
     }
 
     @Override
-    public Optional<FileMetadata> getFileContents(String id) {
+    public Optional<FileMetadata> getFileContents(final String id) {
         if (mongoFileRepository.existsById(id)) {
             return Optional.of(
                     mongoFileRepository.findFileByName(id).convertToFileMetadata()

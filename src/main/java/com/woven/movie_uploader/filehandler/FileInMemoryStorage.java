@@ -46,12 +46,12 @@ public class FileInMemoryStorage implements FileStorage {
     }
 
     @Override
-    public Resource getFileResource(String id) throws IOException {
+    public Resource getFileResource(final String id) throws IOException {
         return new ByteArrayResource(fileMetadataMap.get(id).contents());
     }
 
     @Override
-    public Optional<FileMetadata> getFileContents(String id) {
+    public Optional<FileMetadata> getFileContents(final String id) {
         return Optional.ofNullable(fileMetadataMap.get(id));
     }
 
