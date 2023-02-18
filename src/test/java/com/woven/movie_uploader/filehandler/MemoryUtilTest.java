@@ -1,6 +1,5 @@
 package com.woven.movie_uploader.filehandler;
 
-import com.woven.movie_uploader.filehandler.FileInMemoryHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.Resource;
@@ -17,16 +16,18 @@ public class MemoryUtilTest {
     private FileInMemoryHandler storageUtil;
     private MessageDigest mockDigest;
 
-    private final String sampleMd5String = "00112233445566778899aabbccddeeff";
-    private byte[] sampleM5byteArray;
-    @BeforeEach
-    public void tearUp() throws Exception {
-        mockDigest = mock(MessageDigest.class);
-        storageUtil = new FileInMemoryHandler(mockDigest);
+    private static final String sampleMd5String = "00112233445566778899aabbccddeeff";
+    private static final byte[] sampleM5byteArray;
+    static {
         sampleM5byteArray = new byte[16];
         for(int i = 0 ; i < 16; i++) {
             sampleM5byteArray[i] = (byte)(i * 16 + i);
         }
+    }
+    @BeforeEach
+    public void startUp() throws Exception {
+        mockDigest = mock(MessageDigest.class);
+        storageUtil = new FileInMemoryHandler(mockDigest);
     }
 
     @Test
