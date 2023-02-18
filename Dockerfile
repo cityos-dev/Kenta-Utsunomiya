@@ -1,6 +1,5 @@
+# use heavier version to make sure curl is inside the container
 FROM gradle:7.6.0-jdk17-focal
-
-
 RUN mkdir /var/deploy
 COPY . /var/deploy
 WORKDIR /var/deploy

@@ -30,10 +30,10 @@ public class FileDeleteController {
     @RequestMapping(value = "/{fileid}", method = RequestMethod.DELETE)
     public ResponseEntity<String> handleDelete(@PathVariable final String fileid) throws IOException {
         if (fileHandler.deleteFile(fileid)) {
-            LOG.info("Delete existing file:{}", fileid);
+            LOG.info("Delete existing file: fileid = {}", fileid);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(SUCCESS_DELETE_RESPONCE_MESSAGE);
         } else {
-            LOG.info("File cannot be found: {}", fileid);
+            LOG.warn("File cannot be found: fileid = {}", fileid);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND_MESSAGE);
         }
     }

@@ -2,6 +2,8 @@ package com.woven.movie_uploader.controllers;
 
 import com.woven.movie_uploader.filehandler.FileHandler;
 import com.woven.movie_uploader.filehandler.FileMetadata;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/${api.version}/files")
 public class FileDownloadController {
+    private static final Logger LOG = LogManager.getLogger(FileDownloadController.class);
     private static final String NOT_FOUND_MESSAGE = "File not found";
     final FileHandler fileHandler;
 
@@ -38,11 +41,14 @@ public class FileDownloadController {
             final Resource resource = fileHandler.getFileResource(fileid);
             final String filename = fileMetadata.name();
             final String contentType = fileMetadata.contentType();
+            LOG.info("File found: fileid = {}, filename = {}, content type = {} ", fileid, filename, contentType);
+
             response = ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, contentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", filename))
                     .body(resource);
         } else {
+            LOG.warn("File cannot be found: fileid = {}", fileid);
             response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ByteArrayResource(NOT_FOUND_MESSAGE.getBytes(StandardCharsets.UTF_8))
             );

@@ -21,6 +21,7 @@ services:
       retries: 5
       start_period: 30s
       timeout: 10s
+# dummy container is a way to wait until the application is started with docker-compose "-d" option
   dummy:
     image: alpine:3.17.2
     depends_on:

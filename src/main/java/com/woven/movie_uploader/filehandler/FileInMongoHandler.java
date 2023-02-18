@@ -59,7 +59,6 @@ public class FileInMongoHandler implements FileHandler {
             return Optional.of(
                     mongoFileRepository.findFileByName(id).convertToFileMetadata()
             );
-
         } else {
             return Optional.empty();
         }
