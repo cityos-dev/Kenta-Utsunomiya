@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MultipartException;
-
+/*
+ This ControllerAdvice is for handling exception when the request header is Multipart, but it does not have boundary.
+ */
 @ControllerAdvice
 public class ErrorHandleController {
 
