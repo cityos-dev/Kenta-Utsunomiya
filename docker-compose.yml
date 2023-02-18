@@ -1,9 +1,6 @@
 version: "2.8"
 services:
   mongo:
-    depends_on:
-      web:
-        condition: service_healthy
     image: mongo:latest
     restart: always
     ports:
@@ -16,9 +13,17 @@ services:
     build: .
     ports:
       - "8080:8080"
+    depends_on:
+      - mongo
     healthcheck:
       test: [ "CMD" ,"curl", "-f","http://localhost:8080/v1/health" ]
       interval: 30s
       retries: 5
       start_period: 30s
       timeout: 10s
+  dummy:
+    image: alpine:3.17.2
+    depends_on:
+      web:
+        condition: service_healthy
+    entrypoint: ["sleep", "1000000"]
