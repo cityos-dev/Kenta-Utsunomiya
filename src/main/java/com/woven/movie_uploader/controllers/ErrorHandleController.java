@@ -1,6 +1,8 @@
 package com.woven.movie_uploader.controllers;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +15,11 @@ import org.springframework.web.multipart.MultipartException;
 @ControllerAdvice
 public class ErrorHandleController {
 
+    private static final Logger LOG = LogManager.getLogger(ErrorHandleController.class);
+
     @ExceptionHandler({MultipartException.class, FileUploadException.class})
-    public ResponseEntity<String> handleMultipartException() {
+    public ResponseEntity<String> handleMultipartException(final Exception e) {
+        LOG.error("An Fatal Error occurred, on the client request.", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Request.");
     }
 }

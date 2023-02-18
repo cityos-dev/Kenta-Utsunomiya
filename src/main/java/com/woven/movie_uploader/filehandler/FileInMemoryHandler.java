@@ -47,7 +47,7 @@ public class FileInMemoryHandler implements FileHandler {
 
     @Override
     public Resource getFileResource(String id) throws IOException {
-        return new ByteArrayResource(fileMetadataMap.get(id).getContents());
+        return new ByteArrayResource(fileMetadataMap.get(id).contents());
     }
 
     @Override

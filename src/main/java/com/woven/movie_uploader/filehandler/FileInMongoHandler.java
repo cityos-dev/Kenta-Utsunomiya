@@ -40,7 +40,7 @@ public class FileInMongoHandler implements FileHandler {
                 id,
                 filename,
                 contentType,
-                new Date().toString(),
+                new Date().toString(), // TODO make it configurable from testing.
                 content
         );
         mongoFileRepository.insert(model);
@@ -50,7 +50,7 @@ public class FileInMongoHandler implements FileHandler {
     @Override
     public Resource getFileResource(String id) throws IOException {
         final FileMetadataModel model = mongoFileRepository.findFileByName(id);
-        return new ByteArrayResource(model.convertToFileMetadata().getContents());
+        return new ByteArrayResource(model.convertToFileMetadata().contents());
     }
 
     @Override

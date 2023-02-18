@@ -36,8 +36,8 @@ public class FileDownloadController {
         if (metadataOptional.isPresent()) {
             final FileMetadata fileMetadata = metadataOptional.get();
             final Resource resource = fileHandler.getFileResource(fileid);
-            final String filename = fileMetadata.getName();
-            final String contentType = fileMetadata.getContentType();
+            final String filename = fileMetadata.name();
+            final String contentType = fileMetadata.contentType();
             response = ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, contentType)
                     .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", filename))
