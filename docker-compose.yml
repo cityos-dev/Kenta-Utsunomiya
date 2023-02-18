@@ -17,9 +17,9 @@ services:
       - mongo
     healthcheck:
       test: [ "CMD" ,"curl", "-f","http://localhost:8080/v1/health" ]
-      interval: 30s
-      retries: 5
-      start_period: 30s
+      interval: 5s
+      retries: 10
+      start_period: 5s
       timeout: 10s
 # dummy container is a way to wait until the application is started with docker-compose "-d" option
   dummy:
