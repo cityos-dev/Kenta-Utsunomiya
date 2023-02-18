@@ -1,7 +1,5 @@
-package com.woven.movie_uploader.components;
+package com.woven.movie_uploader.filehandler;
 
-import com.woven.movie_uploader.filehandler.FileHandler;
-import com.woven.movie_uploader.filehandler.FileMetadata;
 import com.woven.movie_uploader.mongo.FileMetadataModel;
 import com.woven.movie_uploader.mongo.FileRepository;
 import org.apache.tomcat.util.security.MD5Encoder;

@@ -1,16 +1,11 @@
-package com.woven.movie_uploader.components;
+package com.woven.movie_uploader.filehandler;
 
-import com.woven.movie_uploader.filehandler.FileHandler;
-import com.woven.movie_uploader.filehandler.FileMetadata;
 import org.apache.tomcat.util.security.MD5Encoder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

@@ -1,11 +1,9 @@
 package com.woven.movie_uploader.controllers;
 
 import com.woven.movie_uploader.filehandler.FileHandler;
-import com.woven.movie_uploader.filehandler.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,11 +32,4 @@ public class FileDeleteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND_MESSAGE);
         }
     }
-
-    @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity<String> handleNotfound(final StorageFileNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(NOT_FOUND_MESSAGE);
-    }
-
-
 }

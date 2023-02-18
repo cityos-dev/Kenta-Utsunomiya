@@ -4,22 +4,11 @@ package com.woven.movie_uploader.filehandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FileMetadata {
+public record FileMetadata(@JsonProperty("fileid") String fileId, @JsonProperty("name") String name,
+                           @JsonProperty("size") int filesize, @JsonProperty("created_at") String createdAt,
+                           @JsonIgnore byte[] contents, @JsonIgnore String contentType) {
 
-    @JsonProperty("fileid")
-    private final String fileId;
-    @JsonProperty("name")
-    private final String name;
-    @JsonProperty("size")
-    private final int filesize;
-    @JsonProperty("created_at")
-    private final String createdAt;
-    @JsonIgnore
-    private final byte[] contents;
-    @JsonIgnore
-    private final String contentType;
-
-    private FileMetadata(final String fileId, final String name, final int filesize, final String createdAt, final byte[] contents, final String contentType) {
+    public FileMetadata(final String fileId, final String name, final int filesize, final String createdAt, final byte[] contents, final String contentType) {
         this.filesize = filesize;
         this.fileId = fileId;
         this.name = name;
@@ -80,7 +69,7 @@ public class FileMetadata {
         return name;
     }
 
-    public byte[] getContents(){
+    public byte[] getContents() {
         return contents;
     }
 
