@@ -1,6 +1,6 @@
 package com.woven.movie_uploader.controllers;
 
-import com.woven.movie_uploader.filehandler.FileHandler;
+import com.woven.movie_uploader.filehandler.FileStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ import java.util.Set;
 public class FileUploadController {
     private static final Logger LOG = LogManager.getLogger(FileUploadController.class);
 
-    private final FileHandler fileHandler;
+    private final FileStorage fileStorage;
     private final String SUCCESS_UPLOAD_MESSAGE = "File uploaded";
     private final String UNSUPPORTED_FILE_TYPE_MESSAGE = "Unsupported Media Type";
     private final Set<String> supportedMediaTypes;
 
     @Autowired
-    FileUploadController(final FileHandler storageUtil,
+    FileUploadController(final FileStorage storageUtil,
                          @Value("#{'${allowed.content.types}'.split(',')}") final List<String> allowedContentTypes) {
-        this.fileHandler = storageUtil;
+        this.fileStorage = storageUtil;
         supportedMediaTypes = new HashSet<>(allowedContentTypes);
     }
 
@@ -45,7 +45,7 @@ public class FileUploadController {
             return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(UNSUPPORTED_FILE_TYPE_MESSAGE);
         }
         LOG.info("Uoloading {}, with media type = {}", filename, mediaType);
-        final String fileid = fileHandler.uploadFile(filename, byteChar, mediaType);
+        final String fileid = fileStorage.uploadFile(filename, byteChar, mediaType);
         final String response = String.format("v1/files/%s", fileid);
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", response).body(SUCCESS_UPLOAD_MESSAGE);
     }

@@ -11,15 +11,15 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class MemoryUtilTest {
+public class FileInMemoryStorageTest {
 
-    private FileInMemoryHandler storageUtil;
+    private FileInMemoryStorage storageUtil;
     private ObjectIdGenerator objectIdGenerator;
 
     @BeforeEach
     public void startUp() throws Exception {
         objectIdGenerator = mock(ObjectIdGenerator.class);
-        storageUtil = new FileInMemoryHandler(objectIdGenerator);
+        storageUtil = new FileInMemoryStorage(objectIdGenerator);
     }
 
     @Test

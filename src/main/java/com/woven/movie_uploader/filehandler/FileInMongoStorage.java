@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 // connect with mongo instance
 
-public class FileInMongoHandler implements FileHandler {
+public class FileInMongoStorage implements FileStorage {
     private final FileRepository mongoFileRepository;
     private final ObjectIdGenerator objectIdGenerator;
 
-    public FileInMongoHandler(final FileRepository repository, final ObjectIdGenerator objectIdGenerator) {
+    public FileInMongoStorage(final FileRepository repository, final ObjectIdGenerator objectIdGenerator) {
         this.mongoFileRepository = repository;
         this.objectIdGenerator = objectIdGenerator;
     }

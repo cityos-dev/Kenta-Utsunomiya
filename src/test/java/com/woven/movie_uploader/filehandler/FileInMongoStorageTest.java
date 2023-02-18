@@ -15,11 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-public class MongoUtilTest {
+public class FileInMongoStorageTest {
 
     private FileRepository fileRepository;
     private ObjectIdGenerator generator;
-    private FileInMongoHandler fileInMongoHandler;
+    private FileInMongoStorage fileInMongoHandler;
 
 
 
@@ -27,7 +27,7 @@ public class MongoUtilTest {
     public void startUp() throws Exception {
         fileRepository = mock(FileRepository.class);
         generator = mock(ObjectIdGenerator.class);
-        fileInMongoHandler = new FileInMongoHandler(fileRepository, generator);
+        fileInMongoHandler = new FileInMongoStorage(fileRepository, generator);
     }
 
     @Test

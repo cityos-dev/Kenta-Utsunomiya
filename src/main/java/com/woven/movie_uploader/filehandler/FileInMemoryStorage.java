@@ -11,13 +11,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-//connect with memory instance
-public class FileInMemoryHandler implements FileHandler {
+// The initial implementation of file storage. Save every data on memory, but will not be used after migrating tp mongo.
+@Deprecated
+public class FileInMemoryStorage implements FileStorage {
 
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
     private final ObjectIdGenerator objectIdGenerator;
 
-    public FileInMemoryHandler(final ObjectIdGenerator objectIdGenerator) {
+    public FileInMemoryStorage(final ObjectIdGenerator objectIdGenerator) {
         this.objectIdGenerator = objectIdGenerator;
     }
 

@@ -1,7 +1,7 @@
 package com.woven.movie_uploader.properties;
 
-import com.woven.movie_uploader.filehandler.FileInMongoHandler;
-import com.woven.movie_uploader.filehandler.FileHandler;
+import com.woven.movie_uploader.filehandler.FileInMongoStorage;
+import com.woven.movie_uploader.filehandler.FileStorage;
 import com.woven.movie_uploader.mongo.FileRepository;
 import org.bson.codecs.ObjectIdGenerator;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +18,9 @@ public class ConfigurationProperties {
     }
 
     @Bean
-    FileHandler fileHandler(final FileRepository repository) {
+    FileStorage fileHandler(final FileRepository repository) {
         // return new FileInMemoryHandler(messageDigest);
-        return new FileInMongoHandler(repository, new ObjectIdGenerator());
+        return new FileInMongoStorage(repository, new ObjectIdGenerator());
     }
 
 }

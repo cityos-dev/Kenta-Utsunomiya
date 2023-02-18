@@ -1,6 +1,6 @@
 package com.woven.movie_uploader.controllers;
 
-import com.woven.movie_uploader.filehandler.FileHandler;
+import com.woven.movie_uploader.filehandler.FileStorage;
 import com.woven.movie_uploader.filehandler.FileMetadata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,20 +25,20 @@ import java.util.Optional;
 public class FileDownloadController {
     private static final Logger LOG = LogManager.getLogger(FileDownloadController.class);
     private static final String NOT_FOUND_MESSAGE = "File not found";
-    final FileHandler fileHandler;
+    final FileStorage fileStorage;
 
     @Autowired
-    FileDownloadController(final FileHandler storageUtil) {
-        this.fileHandler = storageUtil;
+    FileDownloadController(final FileStorage storageUtil) {
+        this.fileStorage = storageUtil;
     }
 
     @RequestMapping(value = "/{fileid}", method = RequestMethod.GET)
     public ResponseEntity<Resource> handleDownload(@PathVariable final String fileid) throws IOException {
         final ResponseEntity<Resource> response;
-        final Optional<FileMetadata> metadataOptional = fileHandler.getFileContents(fileid);
+        final Optional<FileMetadata> metadataOptional = fileStorage.getFileContents(fileid);
         if (metadataOptional.isPresent()) {
             final FileMetadata fileMetadata = metadataOptional.get();
-            final Resource resource = fileHandler.getFileResource(fileid);
+            final Resource resource = fileStorage.getFileResource(fileid);
             final String filename = fileMetadata.name();
             final String contentType = fileMetadata.contentType();
             LOG.info("File found: fileid = {}, filename = {}, content type = {} ", fileid, filename, contentType);
@@ -58,7 +58,7 @@ public class FileDownloadController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<FileMetadata> listFiles() {
-        return fileHandler.allfiles();
+        return fileStorage.allfiles();
     }
 
 }
