@@ -6,4 +6,4 @@ WORKDIR /var/deploy
 RUN gradle clean
 RUN gradle bootJar
 
-ENTRYPOINT ["java", "-jar", "build/libs/movie_uploader-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker" ,"-jar", "build/libs/movie_uploader-0.0.1-SNAPSHOT.jar"]
