@@ -41,6 +41,10 @@ public class FileInMongoStorageTest {
         final FileMetadataModel model = new FileMetadataModel(
                 testExistQuery, filename, contentType, new Date().toString(), content
         );
+
+        
+
+
         when(generator.generate()).thenReturn(testExistQuery);
         when(fileRepository.existsById(eq(testNotExistQuery))).thenReturn(false);
         when(fileRepository.existsById(eq(testExistQuery))).thenReturn(true);

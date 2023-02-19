@@ -7,12 +7,12 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// connect with mongo instance
+// Implementation of FileStorage for Mongo DB
 
 public class FileInMongoStorage implements FileStorage {
     private final FileRepository mongoFileRepository;
@@ -34,12 +34,13 @@ public class FileInMongoStorage implements FileStorage {
 
     @Override
     public String uploadFile(final String filename, byte[] content, final String contentType) throws IOException {
+        final String datetime = Instant.ofEpochMilli(System.currentTimeMillis()).toString();
         final String id = objectIdGenerator.generate().toString();
         final FileMetadataModel model = new FileMetadataModel(
                 id,
                 filename,
                 contentType,
-                new Date().toString(), // TODO make it configurable from testing.
+                Instant.now().toString(),
                 content
         );
         mongoFileRepository.insert(model);

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+// Metadata file that can be converted to JSON.
 public record FileMetadata(@JsonProperty("fileid") String fileId, @JsonProperty("name") String name,
                            @JsonProperty("size") int filesize, @JsonProperty("created_at") String createdAt,
                            @JsonIgnore byte[] contents, @JsonIgnore String contentType) {

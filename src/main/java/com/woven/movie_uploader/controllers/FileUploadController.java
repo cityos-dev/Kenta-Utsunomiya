@@ -44,7 +44,7 @@ public class FileUploadController {
             LOG.error("User upload the file {} with content type = {} , but this is not in the list of supported media types.", filename, mediaType);
             return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(UNSUPPORTED_FILE_TYPE_MESSAGE);
         }
-        LOG.info("Uoloading {}, with media type = {}", filename, mediaType);
+        LOG.info("Uploading {}, with media type = {}", filename, mediaType);
         final String fileid = fileStorage.uploadFile(filename, byteChar, mediaType);
         final String response = String.format("v1/files/%s", fileid);
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", response).body(SUCCESS_UPLOAD_MESSAGE);
