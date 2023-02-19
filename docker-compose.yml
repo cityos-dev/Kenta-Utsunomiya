@@ -3,28 +3,29 @@ services:
   mongo:
     image: mongo:latest
     restart: always
-    ports:
-      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: password
 
   web:
     build: .
-    ports:
-      - "8080:8080"
     depends_on:
       - mongo
     healthcheck:
-      test: [ "CMD" ,"curl", "-f","http://localhost:8080/v1/health" ]
+      test: [ "CMD" ,"curl", "-f","http://localhost:8001/v1/health" ]
       interval: 5s
       retries: 10
       start_period: 5s
       timeout: 10s
-# dummy container is a way to wait until the application is started with docker-compose "-d" option
-  dummy:
-    image: alpine:3.17.2
+  nginx_server:
+    image: nginx:1.23.3-alpine
+    links:
+      - web
     depends_on:
       web:
         condition: service_healthy
-    entrypoint: ["sleep", "1000000"]
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    ports:
+      - "8080:8080"
+

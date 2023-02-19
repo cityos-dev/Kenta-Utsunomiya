@@ -37,7 +37,7 @@ public class FileInMemoryStorageTest {
         // delete file
         assertTrue(storageUtil.deleteFile(id));
 
-
+        // delete that does not exist.
         assertFalse(storageUtil.getFileContents(id).isPresent());
     }
 
