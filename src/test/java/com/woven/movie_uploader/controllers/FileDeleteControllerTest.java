@@ -1,7 +1,6 @@
 package com.woven.movie_uploader.controllers;
 
 import com.woven.movie_uploader.filehandler.FileStorage;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -43,8 +42,7 @@ public class FileDeleteControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/files/"+ fileid))
                 .andExpect(status().isNoContent())
-                .andExpect(result -> Assertions.assertEquals("File was successfully removed",
-                        result.getResponse().getContentAsString()));
+                .andExpect(content().string("File was successfully removed"));
         verify(storage, times(1)).deleteFile(eq(fileid));
     }
 
@@ -55,6 +53,7 @@ public class FileDeleteControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/v1/files/" + fileid))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("File not found"));
+        verify(storage, times(1)).deleteFile(eq(fileid));
     }
 
 }

@@ -58,11 +58,11 @@ public class FileDownloadControllerTest {
                 .build();
         when(storage.getFileContents(eq(fileid))).thenReturn(Optional.of(dummyFile));
         when(storage.getFileResource(eq(fileid))).thenReturn(new ByteArrayResource(sampleContent));
-        final byte[] result = mockMvc.perform(MockMvcRequestBuilders.get("/v1/files/"+ fileid))
+        final byte[] result = mockMvc.perform(MockMvcRequestBuilders.get("/v1/files/" + fileid))
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, contentType))
                 .andExpect(header().string(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", filename)))
-                        .andReturn().getResponse().getContentAsByteArray();
+                .andReturn().getResponse().getContentAsByteArray();
 
         Assertions.assertArrayEquals(sampleContent, result);
         verify(storage, times(1)).getFileContents(eq(fileid));

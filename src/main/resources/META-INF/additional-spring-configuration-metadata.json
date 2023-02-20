@@ -1,11 +1,6 @@
 {
   "properties": [
     {
-      "name": "api.version",
-      "type": "java.lang.String",
-      "description": "The version of the api."
-    },
-    {
       "name": "allowed.content.types",
       "type": "java.lang.String",
       "description": "Allowed metadta types separated by comma."

@@ -7,7 +7,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
       MONGO_INITDB_ROOT_PASSWORD: password
 
-  web:
+  uploadservice:
     build: .
     depends_on:
       - mongo
@@ -19,10 +19,8 @@ services:
       timeout: 10s
   nginx_server:
     image: nginx:1.23.3-alpine
-    links:
-      - web
     depends_on:
-      web:
+      uploadservice:
         condition: service_healthy
     volumes:
       - ./conf.d:/etc/nginx/conf.d
