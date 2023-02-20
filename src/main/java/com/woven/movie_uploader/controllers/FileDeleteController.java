@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(value = "/${api.version}/files")
+@RequestMapping(value = "/v1/files")
 public class FileDeleteController {
     private static final Logger LOG = LogManager.getLogger(FileDeleteController.class);
 

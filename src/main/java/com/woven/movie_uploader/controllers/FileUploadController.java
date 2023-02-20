@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/${api.version}/files")
+@RequestMapping(value = "/v1/files")
 public class FileUploadController {
     private static final Logger LOG = LogManager.getLogger(FileUploadController.class);
 

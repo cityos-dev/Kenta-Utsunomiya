@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/${api.version}/files")
+@RequestMapping(value = "/v1/files")
 public class FileDownloadController {
     private static final Logger LOG = LogManager.getLogger(FileDownloadController.class);
     private static final String NOT_FOUND_MESSAGE = "File not found";
