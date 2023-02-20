@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 
 // The initial implementation of file storage. Save every data on memory, but will not be used after migrating tp mongo.
-@Deprecated
 public class FileInMemoryStorage implements FileStorage {
 
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
