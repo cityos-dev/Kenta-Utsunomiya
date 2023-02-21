@@ -1,7 +1,9 @@
+# Kenta Utsunomiya's implementaion detail is available [docs/README.md](docs/README.md)
+
+
 # Challenge Statement
 
 This challenge is about creating a simple video storage server with REST APIs
-
 ## Details
 
 You are tasked to develop a simple video storage server with REST APIs, which should have:

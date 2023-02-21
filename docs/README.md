@@ -77,7 +77,8 @@ The "schema" of movie metadata file is as follows.
   "name": "original filename of the movie",
   "content_type": "wheather this is video/mp4 or video/mpeg",
   "created_at":"ISO format of the movie created",
-  "content": "byte array of the movie"
+  "content": "Binary of the movie",
+  "size": "byte size of the movie"
 }
 ```
 
