@@ -5,6 +5,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ public class FileInMemoryStorage implements FileStorage {
                 .setFileId(fileid)
                 .setName(filename)
                 .setFilesize(content.length)
-                .setCreatedAt(new Date().toString())
+                .setCreatedAt(Instant.now().toString())
                 .setContent(content)
                 .setContentType(contentType)
                 .build();
