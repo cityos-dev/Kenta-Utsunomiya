@@ -38,7 +38,7 @@ public class FileDownloadController {
         final Optional<FileMetadata> metadataOptional = fileStorage.getFileContents(fileid);
         if (metadataOptional.isPresent()) {
             final FileMetadata fileMetadata = metadataOptional.get();
-            final Resource resource = fileStorage.getFileResource(fileid);
+            final Resource resource = new ByteArrayResource(fileMetadata.contents());
             final String filename = fileMetadata.name();
             final String contentType = fileMetadata.contentType();
             LOG.info("File found: fileid = {}, filename = {}, content type = {} ", fileid, filename, contentType);

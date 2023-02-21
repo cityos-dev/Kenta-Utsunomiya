@@ -3,8 +3,6 @@ package com.woven.movie_uploader.filehandler;
 import com.woven.movie_uploader.mongo.FileMetadataModel;
 import com.woven.movie_uploader.mongo.FileRepository;
 import org.bson.codecs.ObjectIdGenerator;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -49,12 +47,6 @@ public class FileInMongoStorage implements FileStorage {
         );
         mongoFileRepository.insert(model);
         return id;
-    }
-
-    @Override
-    public Resource getFileResource(final String id) throws IOException {
-        final FileMetadataModel model = mongoFileRepository.findFileByName(id);
-        return new ByteArrayResource(model.convertToFileMetadata().contents());
     }
 
     @Override

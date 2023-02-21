@@ -1,8 +1,6 @@
 package com.woven.movie_uploader.filehandler;
 
 import org.bson.codecs.ObjectIdGenerator;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -46,11 +44,6 @@ public class FileInMemoryStorage implements FileStorage {
         fileMetadataMap.put(fileid, fileMetadata);
 
         return fileid;
-    }
-
-    @Override
-    public Resource getFileResource(final String id) throws IOException {
-        return new ByteArrayResource(fileMetadataMap.get(id).contents());
     }
 
     @Override
