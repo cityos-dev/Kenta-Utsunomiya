@@ -1,11 +1,12 @@
 package com.woven.movie_uploader.controllers;
 
-import com.woven.movie_uploader.filehandler.FileStorage;
 import com.woven.movie_uploader.filehandler.FileMetadata;
+import com.woven.movie_uploader.filehandler.FileStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/v1/files")
@@ -35,10 +35,11 @@ public class FileDownloadController {
     @RequestMapping(value = "/{fileid}", method = RequestMethod.GET)
     public ResponseEntity<Resource> handleDownload(@PathVariable final String fileid) throws IOException {
         final ResponseEntity<Resource> response;
-        final Optional<FileMetadata> metadataOptional = fileStorage.getFileContents(fileid);
+        final var metadataOptional = fileStorage.getFileContents(fileid);
         if (metadataOptional.isPresent()) {
-            final FileMetadata fileMetadata = metadataOptional.get();
-            final Resource resource = fileStorage.getFileResource(fileid);
+            final var content = metadataOptional.get();
+            final FileMetadata fileMetadata = content.getFirst();
+            final Resource resource = new InputStreamResource(content.getSecond());
             final String filename = fileMetadata.name();
             final String contentType = fileMetadata.contentType();
             LOG.info("File found: fileid = {}, filename = {}, content type = {} ", fileid, filename, contentType);

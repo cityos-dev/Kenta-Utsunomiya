@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
@@ -48,16 +49,9 @@ public class FileDownloadControllerTest {
         final String contentType = "video/mp4";
         final byte[] sampleContent = "12345".getBytes(StandardCharsets.UTF_8);
         final String createdAt = "2023-02-20T01:52:00Z";
-        final FileMetadata dummyFile = FileMetadata.builder()
-                .setFileId(fileid)
-                .setName(filename)
-                .setContent(sampleContent)
-                .setContentType(contentType)
-                .setCreatedAt(createdAt)
-                .setFilesize(sampleContent.length)
-                .build();
-        when(storage.getFileContents(eq(fileid))).thenReturn(Optional.of(dummyFile));
-        when(storage.getFileResource(eq(fileid))).thenReturn(new ByteArrayResource(sampleContent));
+        final FileMetadata dummyFile =
+                new FileMetadata(fileid, filename, sampleContent.length, createdAt, contentType);
+        when(storage.getFileContents(eq(fileid))).thenReturn(Optional.of(Pair.of(dummyFile, new ByteArrayInputStream(sampleContent))));
         final byte[] result = mockMvc.perform(MockMvcRequestBuilders.get("/v1/files/" + fileid))
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, contentType))
@@ -66,7 +60,6 @@ public class FileDownloadControllerTest {
 
         Assertions.assertArrayEquals(sampleContent, result);
         verify(storage, times(1)).getFileContents(eq(fileid));
-        verify(storage, times(1)).getFileResource(eq(fileid));
     }
 
     @Test

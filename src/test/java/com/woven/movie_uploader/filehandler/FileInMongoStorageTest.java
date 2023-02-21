@@ -3,11 +3,14 @@ package com.woven.movie_uploader.filehandler;
 import com.woven.movie_uploader.mongo.FileMetadataModel;
 import com.woven.movie_uploader.mongo.FileRepository;
 import org.bson.codecs.ObjectIdGenerator;
+import org.bson.types.Binary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.data.util.Pair;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -53,7 +56,7 @@ public class FileInMongoStorageTest {
         final String testNotExistQuery = "aabbcc";
         final String testExistQuery = "ccddaa";
         final FileMetadataModel model = new FileMetadataModel(
-                testExistQuery, filename, contentType, expectedDate, content
+                testExistQuery, filename, contentType, expectedDate, new Binary(content), content.length
         );
 
 
@@ -64,9 +67,9 @@ public class FileInMongoStorageTest {
 
         assertFalse(fileInMongoStorage.getFileContents(testNotExistQuery).isPresent()); // check file does not exist
 
-        assertEquals(testExistQuery, fileInMongoStorage.uploadFile(filename, content, contentType)); // check upload success
+        assertEquals(testExistQuery, fileInMongoStorage.uploadFile(filename, new ByteArrayInputStream(content), contentType)); // check upload success
 
-        final Optional<FileMetadata> metadata = fileInMongoStorage.getFileContents(testExistQuery);
+        final Optional<FileMetadata> metadata = fileInMongoStorage.getFileContents(testExistQuery).map(Pair::getFirst);
         assertTrue(metadata.isPresent());
 
 
@@ -85,9 +88,9 @@ public class FileInMongoStorageTest {
         final String contentType = "contentType";
         final String objectId = "objectid";
         when(generator.generate()).thenReturn(objectId);
-        fileInMongoStorage.uploadFile(filename, content, contentType);
+        fileInMongoStorage.uploadFile(filename, new ByteArrayInputStream(content), contentType);
         final FileMetadataModel model = new FileMetadataModel(
-                objectId, filename, contentType, expectedDate, content
+                objectId, filename, contentType, expectedDate, new Binary(content), content.length
         );
         verify(generator, times(1)).generate();
         verify(fileRepository, times(1)).insert(eq(model));
@@ -101,11 +104,11 @@ public class FileInMongoStorageTest {
         final String contentType = "contentType";
         final String objectId = "objectid";
         final FileMetadataModel model = new FileMetadataModel(
-                objectId, filename, contentType, expectedDate, content
+                objectId, filename, contentType, expectedDate, new Binary(content), content.length
         );
         when(fileRepository.existsById(eq(objectId))).thenReturn(true);
         when(fileRepository.findFileByName(eq(objectId))).thenReturn(model);
-        final Optional<FileMetadata> metadata = fileInMongoStorage.getFileContents(objectid);
+        final Optional<FileMetadata> metadata = fileInMongoStorage.getFileContents(objectid).map(Pair::getFirst);
         assertTrue(metadata.isPresent());
         assertEquals(model.convertToFileMetadata(), metadata.get());
         verify(fileRepository, times(1)).existsById(eq(objectId));
@@ -116,7 +119,7 @@ public class FileInMongoStorageTest {
     public void testNotFound() throws Exception {
         final String objectid = "objectid";
         when(fileRepository.existsById(eq(objectid))).thenReturn(false);
-        final Optional<FileMetadata> metadata = fileInMongoStorage.getFileContents(objectid);
+        final Optional<FileMetadata> metadata = fileInMongoStorage.getFileContents(objectid).map(Pair::getFirst);
         assertFalse(metadata.isPresent());
         verify(fileRepository, times(1)).existsById(eq(objectid));
         verify(fileRepository, never()).findFileByName(eq(objectid));
@@ -148,14 +151,16 @@ public class FileInMongoStorageTest {
                 "fil1.mpeg",
                 "video/mpeg",
                 "2023-01-03T00:11:22Z",
-                "content1".getBytes(StandardCharsets.UTF_8)
+                new Binary("content1".getBytes(StandardCharsets.UTF_8)),
+                "content1".getBytes(StandardCharsets.UTF_8).length
         );
         final FileMetadataModel model2 = new FileMetadataModel(
                 "id2",
                 "fil2.mp4",
                 "video/mp4",
                 "2027-01-03T00:11:22Z",
-                "content2".getBytes(StandardCharsets.UTF_8)
+                new Binary("content2".getBytes(StandardCharsets.UTF_8)),
+                "content2".getBytes(StandardCharsets.UTF_8).length
         );
         final List<FileMetadataModel> modelList = Arrays.asList(model1, model2);
         when(fileRepository.findAll()).thenReturn(modelList);

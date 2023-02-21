@@ -37,7 +37,6 @@ public class FileUploadController {
 
     @RequestMapping(method = RequestMethod.POST)
     public synchronized ResponseEntity<String> handleUpload(final MultipartFile data) throws IOException {
-        final byte[] byteChar = data.getBytes();
         final String mediaType = data.getContentType();
         final String filename = data.getOriginalFilename();
         if (!supportedMediaTypes.contains(mediaType)) {
@@ -45,7 +44,7 @@ public class FileUploadController {
             return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(UNSUPPORTED_FILE_TYPE_MESSAGE);
         }
         LOG.info("Uploading {}, with media type = {}", filename, mediaType);
-        final String fileid = fileStorage.uploadFile(filename, byteChar, mediaType);
+        final String fileid = fileStorage.uploadFile(filename, data.getInputStream(), mediaType);
         final String response = String.format("v1/files/%s", fileid);
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", response).body(SUCCESS_UPLOAD_MESSAGE);
     }
