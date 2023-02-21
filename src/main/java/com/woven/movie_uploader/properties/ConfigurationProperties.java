@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Clock;
+
 @Configuration
 public class ConfigurationProperties {
 
@@ -19,13 +21,19 @@ public class ConfigurationProperties {
     }
 
     @Bean
+    Clock getClock() {
+        return Clock.systemUTC();
+    }
+
+    @Bean
     FileStorage fileHandler(final FileRepository repository,
                             @Value("${file.storage.implementation}") final FileStorageImplName storageImplName,
-                            final ObjectIdGenerator objectIdGenerator) {
+                            final ObjectIdGenerator objectIdGenerator,
+                            final Clock clock) {
         // change the storage based on the configuration.
         return switch (storageImplName) {
-            case MEMORY -> new FileInMemoryStorage(objectIdGenerator);
-            case MONGO -> new FileInMongoStorage(repository, objectIdGenerator);
+            case MEMORY -> new FileInMemoryStorage(objectIdGenerator, clock);
+            case MONGO -> new FileInMongoStorage(repository, objectIdGenerator, clock);
         };
     }
 
