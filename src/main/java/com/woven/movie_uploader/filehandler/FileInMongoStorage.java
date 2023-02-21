@@ -7,6 +7,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -17,10 +18,14 @@ import java.util.stream.Collectors;
 public class FileInMongoStorage implements FileStorage {
     private final FileRepository mongoFileRepository;
     private final ObjectIdGenerator objectIdGenerator;
+    private final Clock clock;
 
-    public FileInMongoStorage(final FileRepository repository, final ObjectIdGenerator objectIdGenerator) {
+    public FileInMongoStorage(final FileRepository repository,
+                              final ObjectIdGenerator objectIdGenerator,
+                              final Clock clock) {
         this.mongoFileRepository = repository;
         this.objectIdGenerator = objectIdGenerator;
+        this.clock = clock;
     }
 
     @Override
@@ -39,7 +44,7 @@ public class FileInMongoStorage implements FileStorage {
                 id,
                 filename,
                 contentType,
-                Instant.now().toString(),
+                Instant.now(clock).toString(),
                 content
         );
         mongoFileRepository.insert(model);

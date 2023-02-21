@@ -5,8 +5,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +17,12 @@ public class FileInMemoryStorage implements FileStorage {
 
     private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
     private final ObjectIdGenerator objectIdGenerator;
+    private final Clock clock;
 
-    public FileInMemoryStorage(final ObjectIdGenerator objectIdGenerator) {
+    public FileInMemoryStorage(final ObjectIdGenerator objectIdGenerator,
+                               final Clock clock) {
         this.objectIdGenerator = objectIdGenerator;
+        this.clock = clock;
     }
 
 
@@ -36,7 +39,7 @@ public class FileInMemoryStorage implements FileStorage {
                 .setFileId(fileid)
                 .setName(filename)
                 .setFilesize(content.length)
-                .setCreatedAt(Instant.now().toString())
+                .setCreatedAt(Instant.now(clock).toString())
                 .setContent(content)
                 .setContentType(contentType)
                 .build();
