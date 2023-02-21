@@ -44,7 +44,7 @@ I've used spring boot application framework to implement the API. Why I used the
 * Java is used from many companies, a lot of test frameworks can be used.
 
 ### controllers
-In order to handle the request, I've separated 5 controllers.
+In order to handle the request, I've separated the function into 5 controllers based on the endpoint and HTTP requests.
 #### Healthcheck controller
 Just checking health is ok or not. it returns "OK" as string with 200 response. It is mainly used from ~~pod~~ container health checking on ~~kubernates~~ docker compose.   
 #### File upload controller
@@ -92,15 +92,16 @@ The "schema" of movie metadata file is as follows.
 ![Overview ](infra.png)
 
 In docker application environment, we will launch three ~~pods~~ containers as follows
-* mongodb service: storage for saving video data on mogodb. it requires authentication. 
-* UploadService: Java application for that project, it depends on mongo service. It checks health endpoint every five seconds to check the availabiltiy.
-* nginx: reverse proxy for forwording HTTP requests to api server. It will launch after Java application is healthly. 
+* **mongodb service**: storage for saving video data on mogodb. it requires authentication. 
+* **UploadService**: Java application for that project, it depends on mongo service. It checks health endpoint every five seconds to check the availabiltiy.
+* **nginx service**: reverse proxy for forwording HTTP requests to api server. It will launch after Java application is healthly. It can be used as many ways such as access control, adding new header, forwording to another service when we expand the version to v2 ...
 
 
-### Referred Websites  
+### Referred Websites and Tools 
 * [spring boot ](https://spring.io/)
 * [docker compose](https://docs.docker.com/compose/)
 * [gradle](https://gradle.org/)
+* [Intellij](https://www.jetbrains.com/idea/)
 
 
 ### comments
