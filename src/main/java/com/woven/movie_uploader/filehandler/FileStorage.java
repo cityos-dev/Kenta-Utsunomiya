@@ -1,6 +1,9 @@
 package com.woven.movie_uploader.filehandler;
 
+import org.springframework.data.util.Pair;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +11,9 @@ import java.util.Optional;
 public interface FileStorage {
     boolean deleteFile(final String id) throws IOException;
 
-    String uploadFile(final String filename, final byte[] content, final String contentType) throws IOException;
+    String uploadFile(final String filename, final InputStream inputStream, final String contentType) throws IOException;
 
-    Optional<FileMetadata> getFileContents(final String id);
+    Optional<Pair<FileMetadata, InputStream>> getFileContents(final String id);
 
     List<FileMetadata> allfiles();
 }

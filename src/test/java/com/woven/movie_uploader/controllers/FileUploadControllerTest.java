@@ -54,14 +54,14 @@ public class FileUploadControllerTest {
                 sampleContents
         );
         final String sampleId = "id123";
-        when(storage.uploadFile(eq(sampleFileName), eq(sampleContents), eq(sampleSupportedContentType))).thenReturn(sampleId);
+        when(storage.uploadFile(eq(sampleFileName), any(), eq(sampleSupportedContentType))).thenReturn(sampleId);
 
         mockMvc.perform(multipart("/v1/files").file(mockFile))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "v1/files/" + sampleId))
                 .andExpect(content().string("File uploaded"));
         verify(storage, times(1))
-                .uploadFile(eq(sampleFileName), eq(sampleContents), eq(sampleSupportedContentType));
+                .uploadFile(eq(sampleFileName), any(), eq(sampleSupportedContentType));
     }
 
     @Test

@@ -3,8 +3,12 @@ package com.woven.movie_uploader.filehandler;
 import com.woven.movie_uploader.mongo.FileMetadataModel;
 import com.woven.movie_uploader.mongo.FileRepository;
 import org.bson.codecs.ObjectIdGenerator;
+import org.bson.types.Binary;
+import org.springframework.data.util.Pair;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -36,25 +40,26 @@ public class FileInMongoStorage implements FileStorage {
     }
 
     @Override
-    public String uploadFile(final String filename, byte[] content, final String contentType) throws IOException {
+    public String uploadFile(final String filename, final InputStream inputStream, final String contentType) throws IOException {
         final String id = objectIdGenerator.generate().toString();
+        final Binary binary = new Binary(inputStream.readAllBytes());
         final FileMetadataModel model = new FileMetadataModel(
                 id,
                 filename,
                 contentType,
                 Instant.now(clock).toString(),
-                content
+                binary,
+                binary.length()
         );
         mongoFileRepository.insert(model);
         return id;
     }
 
     @Override
-    public Optional<FileMetadata> getFileContents(final String id) {
+    public Optional<Pair<FileMetadata, InputStream>> getFileContents(final String id) {
         if (mongoFileRepository.existsById(id)) {
-            return Optional.of(
-                    mongoFileRepository.findFileByName(id).convertToFileMetadata()
-            );
+            final FileMetadataModel model = mongoFileRepository.findFileByName(id);
+            return Optional.of(Pair.of(model.convertToFileMetadata(), new ByteArrayInputStream(model.content().getData())));
         } else {
             return Optional.empty();
         }

@@ -1,19 +1,23 @@
 package com.woven.movie_uploader.filehandler;
 
 import org.bson.codecs.ObjectIdGenerator;
+import org.springframework.data.util.Pair;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // The initial implementation of file storage. Save every data on memory, but will not be used after migrating tp mongo.
 public class FileInMemoryStorage implements FileStorage {
 
-    private final Map<String, FileMetadata> fileMetadataMap = new HashMap<>();
+    private final Map<String, Pair<FileMetadata, byte[]>> fileMetadataMap = new HashMap<>();
     private final ObjectIdGenerator objectIdGenerator;
     private final Clock clock;
 
@@ -31,29 +35,24 @@ public class FileInMemoryStorage implements FileStorage {
 
 
     @Override
-    public synchronized String uploadFile(final String filename, final byte[] content, final String contentType) throws IOException {
+    public synchronized String uploadFile(final String filename, final InputStream inputStream, final String contentType) throws IOException {
         final String fileid = objectIdGenerator.generate().toString();
-        final FileMetadata fileMetadata = FileMetadata.builder()
-                .setFileId(fileid)
-                .setName(filename)
-                .setFilesize(content.length)
-                .setCreatedAt(Instant.now(clock).toString())
-                .setContent(content)
-                .setContentType(contentType)
-                .build();
-        fileMetadataMap.put(fileid, fileMetadata);
+        final byte[] content = inputStream.readAllBytes();
+        fileMetadataMap.put(fileid, Pair.of(
+                new FileMetadata(fileid, filename, content.length, Instant.now(clock).toString(), contentType),
+                content)
+        );
 
         return fileid;
     }
 
     @Override
-    public Optional<FileMetadata> getFileContents(final String id) {
-        return Optional.ofNullable(fileMetadataMap.get(id));
+    public Optional<Pair<FileMetadata, InputStream>> getFileContents(final String id) {
+        return Optional.ofNullable(fileMetadataMap.get(id)).map(elem -> Pair.of(elem.getFirst(), new ByteArrayInputStream(elem.getSecond())));
     }
-
 
     @Override
     public List<FileMetadata> allfiles() {
-        return fileMetadataMap.values().stream().toList();
+        return fileMetadataMap.values().stream().map(Pair::getFirst).collect(Collectors.toList());
     }
 }
