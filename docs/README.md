@@ -10,12 +10,8 @@ I added following files from the initial commit.
 * nginx.config file for reverse proxy (will describe why reverse proxy is needed)
 * Docker related files to run the pipeline on github actions (docker-compose.yml and Dockerfile)
 
-## How to run the command 
-I prepared two ways to run the pipeline on the local machine.
-
-#### Use docker compose  (recommended)
-##### requirements 
-* docker-compose 1.16
+## How to run the application
+Use docker-compose to run the application 
 ##### command 
 
 ```shell
@@ -24,20 +20,6 @@ cd Kenta-Utsunomiya
 docker-compose up -d --wait
 ```
 
-### Use gradle 
-##### Requirements 
-* OpenJDK 17.0
-* gradle (just for downloading wrapper binary, so any version is ok)
-* (mongo db is not needed because it save files on memory)
-#####
-Command 
-```shell
-git clone git@github.com:cityos-dev/Kenta-Utsunomiya.git
-cd Kenta-Utsunomiya
-gradle wrapper  # download gradle wrapper jar file on local.
-./gradlew clean test bootJar  # build Jar file.
-java  -Dspring.profiles.active=local -jar build/libs/movie_uploader-0.0.1-SNAPSHOT.jar # run the daemon to local application config 
-```
 ## implementation details on the API
 I've used spring boot application framework to implement the API. Why I used the api was Spring boot is 
 * stable and maintainable, so it is used from a lot of enterprise application. 
