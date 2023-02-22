@@ -43,14 +43,10 @@ Accept DELETE request to `/v1/files/id`. If exists, delete the id from the stora
 This will mainly handle the Bad request to the query on upload controller. If file upload controller encounters an error when getting request. This controller advice will catch the failure and provide 410 Bad request to users.
 
 ### storages 
-In order to save the files on storage, I prepare one file storage handler interface in Java, and provide two implementation
-for the abstract storage interface.
-#### File in memory storage 
-Save all the file on memory, that means all the id-file mapping is saved as HashMap in java.
-It's almost equivalent with using memcached or redis. It's not scalable and persistent, but the response is quite fast.
+In order to save the files on storage, I define a file storage handler interface in Java for make CURD operation abstruct, and provide one implementation for the abstract storage interface to save the data to mongo. If you want to use another storage such as RDB or phisical storage, you can implement file handler appropriately. (actually I initially implement the code to save everything on memory, so the abstruct interface was very useful to transition from memory to mongo)
 #### File in mongo storage
 Save the data on mongodb. All the mongo interfaces are written in [spring mongo repository](https://www.mongodb.com/compatibility/spring-boot).
-Considering that the files need to be stored for a long period of time, you should take this option.
+Considering that the files need to be stored for a long period of time, you should take this option rather than in memory DB(memcached , redis).
 
 The "schema" of movie metadata file is as follows.
 ```json
@@ -67,7 +63,7 @@ The "schema" of movie metadata file is as follows.
 ### Other java library to implement the API and test.
 * [Apache Log4j](https://logging.apache.org/log4j/2.x/): logging library for debugging 
 * [jackson](https://github.com/FasterXML/jackson): a library to treat Java's object to json.
-* [mockito](https://site.mockito.org/) : mock library for using unit test 
+* [mockito](https://site.mockito.org/) : mock library for using unit test mainly used for mocking mongodb intertface in controller testing.
 
 
 ## Infrastructure Architecture. 
